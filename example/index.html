@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Example</title>
+</head>
+
+<body>
+    <div id="app">
+    </div>
+
+    <script src="/node_modules/jquery/dist/jquery.js"></script>
+    <script src="/dist/jpager.js"></script>
+    <script>
+        $(function(){
+            var pagination = {
+                "items":55,
+                "current_offset":0,
+                "page_size":12,
+                "pages":5,
+                "current_page":1,
+                "current_url":"/department/56729",
+                "next":{
+                    "url":"/department/56729?department_ids%5B%5D=56730\u0026name=\u0026page=2\u0026per_page=12"},
+                "links":[
+                    {
+                        "page_number":1,
+                        "url":"/department/56729?department_ids%5B%5D=56730\u0026name=\u0026page=1\u0026per_page=12"
+                    },
+                    {
+                        "page_number":2,
+                        "url":"/department/56729?department_ids%5B%5D=56730\u0026name=\u0026page=2\u0026per_page=12"
+                    }
+                ]
+            };
+            var pager = $('#app')
+                .jpager({
+                    baseUrl: encodeURI((pagination.links[0]||{}).url).replace(/page=\d*?\&/, ''),
+                    currentPage: pagination.current_page,
+                    totalPage: pagination.pages
+                })
+                .data('jpager');
+            console.log(pager);
+            pager.render();
+        });
+    </script>
+</body>
+
+</html>
