@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "outFile": "./dist/jpager.js",
+        "declaration": true
+    },
+    "exclude": [
+        "node_modules",
+        "dist"
+    ],
+    "compileOnSave": true
+}
