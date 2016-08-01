@@ -67,9 +67,11 @@ interface JQuery {
             let pages: jpage[] = [];
 
             if (totalPage > 1) {
-                let createPage = function(idx) :jpage {
-                    let pageNumber = fromZero ? idx : idx + 1;
-                    let name = fromZero ? idx : idx + 1;
+                let createPageNumber = idx => fromZero ? idx : idx + 1;
+                let createName = idx => idx + 1;
+                let createPage = function (idx): jpage {
+                    let pageNumber = createPageNumber(idx);
+                    let name = createName(idx);
                     return {
                         name: `${name}`,
                         url: `${baseUrl}${pageIndexName}=${pageNumber}`,
@@ -84,8 +86,11 @@ interface JQuery {
                         pages.push(createPage(i));
                     }
                 } else {
-                    let first = createPage(0);
-                    let last = createPage(totalPage-1);
+                    let min = createPageNumber(0);
+                    let max = createPageNumber(totalPage - 1);
+                    let before = currentPage - min;
+                    let after = max - currentPage;
+
 
                 }
             }

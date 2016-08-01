@@ -30,9 +30,11 @@
             var totalPage = typeof config.totalPage !== 'undefined' ? config.totalPage : (fromZero_1 ? currentPage_1 + 1 : currentPage_1);
             var pages = [];
             if (totalPage > 1) {
+                var createPageNumber_1 = function (idx) { return fromZero_1 ? idx : idx + 1; };
+                var createName_1 = function (idx) { return idx + 1; };
                 var createPage = function (idx) {
-                    var pageNumber = fromZero_1 ? idx : idx + 1;
-                    var name = fromZero_1 ? idx : idx + 1;
+                    var pageNumber = createPageNumber_1(idx);
+                    var name = createName_1(idx);
                     return {
                         name: "" + name,
                         url: "" + baseUrl_1 + pageIndexName_1 + "=" + pageNumber,
@@ -48,8 +50,10 @@
                     }
                 }
                 else {
-                    var first = createPage(0);
-                    var last = createPage(totalPage - 1);
+                    var min = createPageNumber_1(0);
+                    var max = createPageNumber_1(totalPage - 1);
+                    var before = currentPage_1 - min;
+                    var after = max - currentPage_1;
                 }
             }
             var data = {
