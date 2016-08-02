@@ -70,7 +70,7 @@
                         pages.push(createPage(i));
                     }
                     if (after > level + 1) {
-                        pages.push(createPage(pageToIdx(endIdx + 1), '...'));
+                        pages.push(createPage(endIdx + 1, '...'));
                         pages.push(createPage(totalPage - 1));
                     }
                     else if (after > level) {
