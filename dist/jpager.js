@@ -6,8 +6,8 @@
         var data = $self.data('jpager');
         var pages = data.pages;
         var lis = pages.map(function (v, i) {
-            var $a = $('<a></a>').attr('href', v.url).text(v.name);
-            var $li = $('<li></li>').append($a);
+            var $a = $('<a></a>').attr('href', v.url).text(v.name).addClass('jpager__page-link');
+            var $li = $('<li></li>').addClass('jpager__page').append($a);
             if (v.active) {
                 $li.addClass('active');
             }
@@ -16,9 +16,8 @@
             }
             return $li[0];
         });
-        var $ul = $('<ul></ul>').addClass('pagination').append(lis);
-        var $nav = $('<nav aria-label="Page navigation"></nav>')
-            .append($ul);
+        var $ul = $('<ul></ul>').addClass('pagination').addClass('jpager__wrapper').append(lis);
+        var $nav = $('<nav aria-label="Page navigation"></nav>').addClass('jpager').append($ul);
         $self.append($nav);
         return $self;
     };
@@ -29,12 +28,13 @@
             var currentPage_1 = typeof config.currentPage !== 'undefined' ? config.currentPage : (fromZero_1 ? 0 : 1);
             var totalPage = typeof config.totalPage !== 'undefined' ? config.totalPage : (fromZero_1 ? currentPage_1 + 1 : currentPage_1);
             var pages = [];
+            // calculate the page navigation items
             if (totalPage > 1) {
                 var createPageNumber_1 = function (idx) { return fromZero_1 ? idx : idx + 1; };
                 var createName_1 = function (idx) { return idx + 1; };
-                var createPage = function (idx) {
+                var createPage = function (idx, preferName) {
                     var pageNumber = createPageNumber_1(idx);
-                    var name = createName_1(idx);
+                    var name = preferName || createName_1(idx);
                     return {
                         name: "" + name,
                         url: "" + baseUrl_1 + pageIndexName_1 + "=" + pageNumber,
@@ -54,6 +54,28 @@
                     var max = createPageNumber_1(totalPage - 1);
                     var before = currentPage_1 - min;
                     var after = max - currentPage_1;
+                    var pageToIdx = function (page) { return fromZero_1 ? page : page - 1; };
+                    var startIdx = pageToIdx(currentPage_1 - level);
+                    startIdx = startIdx < 0 ? 0 : startIdx;
+                    var endIdx = pageToIdx(currentPage_1 + level);
+                    endIdx = endIdx > totalPage - 1 ? totalPage - 1 : endIdx;
+                    if (before > level + 1) {
+                        pages.push(createPage(0));
+                        pages.push(createPage(startIdx - 1, '...'));
+                    }
+                    else if (before > level) {
+                        pages.push(createPage(0));
+                    }
+                    for (var i = startIdx; i <= endIdx; i++) {
+                        pages.push(createPage(i));
+                    }
+                    if (after > level + 1) {
+                        pages.push(createPage(pageToIdx(endIdx + 1), '...'));
+                        pages.push(createPage(totalPage - 1));
+                    }
+                    else if (after > level) {
+                        pages.push(createPage(totalPage - 1));
+                    }
                 }
             }
             var data = {

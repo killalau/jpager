@@ -35,8 +35,8 @@ interface JQuery {
         let pages: jpage[] = data.pages;
 
         let lis = pages.map((v, i) => {
-            let $a = $('<a></a>').attr('href', v.url).text(v.name);
-            let $li = $('<li></li>').append($a);
+            let $a = $('<a></a>').attr('href', v.url).text(v.name).addClass('jpager__page-link');
+            let $li = $('<li></li>').addClass('jpager__page').append($a);
             if (v.active) {
                 $li.addClass('active');
             }
@@ -45,9 +45,8 @@ interface JQuery {
             }
             return $li[0];
         });
-        let $ul = $('<ul></ul>').addClass('pagination').append(lis);
-        let $nav = $('<nav aria-label="Page navigation"></nav>')
-            .append($ul);
+        let $ul = $('<ul></ul>').addClass('pagination').addClass('jpager__wrapper').append(lis);
+        let $nav = $('<nav aria-label="Page navigation"></nav>').addClass('jpager').append($ul);
         $self.append($nav);
         return $self;
     }
@@ -66,12 +65,13 @@ interface JQuery {
             let totalPage: number = typeof config.totalPage !== 'undefined' ? config.totalPage : (fromZero ? currentPage + 1 : currentPage);
             let pages: jpage[] = [];
 
+            // calculate the page navigation items
             if (totalPage > 1) {
                 let createPageNumber = idx => fromZero ? idx : idx + 1;
                 let createName = idx => idx + 1;
-                let createPage = function (idx): jpage {
+                let createPage = function (idx, preferName?: string): jpage {
                     let pageNumber = createPageNumber(idx);
-                    let name = createName(idx);
+                    let name = preferName || createName(idx);
                     return {
                         name: `${name}`,
                         url: `${baseUrl}${pageIndexName}=${pageNumber}`,
@@ -90,8 +90,29 @@ interface JQuery {
                     let max = createPageNumber(totalPage - 1);
                     let before = currentPage - min;
                     let after = max - currentPage;
+                    let pageToIdx = page => fromZero ? page : page - 1;
+                    let startIdx = pageToIdx(currentPage - level);
+                    startIdx = startIdx < 0 ? 0 : startIdx;
+                    let endIdx = pageToIdx(currentPage + level);
+                    endIdx = endIdx > totalPage - 1 ? totalPage - 1 : endIdx;
 
+                    if (before > level + 1) {
+                        pages.push(createPage(0));
+                        pages.push(createPage(startIdx - 1, '...'));
+                    } else if (before > level) {
+                        pages.push(createPage(0));
+                    }
 
+                    for (let i = startIdx; i <= endIdx; i++) {
+                        pages.push(createPage(i));
+                    }
+
+                    if (after > level + 1) {
+                        pages.push(createPage(pageToIdx(endIdx + 1), '...'));
+                        pages.push(createPage(totalPage - 1));
+                    } else if (after > level) {
+                        pages.push(createPage(totalPage - 1));
+                    }
                 }
             }
 
