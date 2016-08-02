@@ -1,4 +1,7 @@
 {
   "name": "jpager",
-  "dependencies": {}
+  "dependencies": {},
+  "globalDependencies": {
+    "jquery": "registry:dt/jquery#1.10.0+20160704162008"
+  }
 }
